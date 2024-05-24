@@ -8,29 +8,56 @@ import "./assets/img/4geeks.ico";
 window.onload = function() {
   //write your code here
   const holaaaaaaaaaaaaaaaaaaaaaaaa = document.querySelector("#excuse");
-
-  let culpable = ["Isa", "Anabella", "Anag", "yoda", "camiladiaz"];
-  let accion = ["devoro", "mato", "rompio", "se comio", "daño"];
-  let problema = [
-    "la tarea",
-    "algoritmos y programacion",
-    "fisica",
-    "la serie del caribe",
-    "nuestro trabajo"
+  let frutas = [
+    "manzana",
+    "banana",
+    "cereza",
+    "durazno",
+    "kiwi",
+    "limón",
+    "mango"
   ];
-  let cuando = ["ayer", "el sabado", "el domingo", "el lunes", "no se cuando"];
-
+  let animales = [
+    "perro",
+    "gato",
+    "elefante",
+    "jirafa",
+    "tigre",
+    "león",
+    "delfín"
+  ];
+  let colores = [
+    "rojo",
+    "azul",
+    "verde",
+    "amarillo",
+    "negro",
+    "blanco",
+    "naranja"
+  ];
+  let paises = [
+    "argentina",
+    "brasil",
+    "canadá",
+    "dinamarca",
+    "españa",
+    "francia",
+    "japón"
+  ];
+  let deportes = [
+    "fútbol",
+    "baloncesto",
+    "tenis",
+    "natación",
+    "ciclismo",
+    "golf",
+    "béisbol"
+  ];
+  let categories = [frutas, animales, colores, paises, deportes];
   function generador(e) {
     return e[Math.floor(Math.random() * e.length)];
   }
-  let excusa =
-    generador(culpable) +
-    " " +
-    generador(accion) +
-    " " +
-    generador(problema) +
-    " " +
-    generador(cuando);
-
+  let categoria = generador(categories);
+  let excusa = generador(categoria);
   holaaaaaaaaaaaaaaaaaaaaaaaa.innerHTML = excusa;
 };
