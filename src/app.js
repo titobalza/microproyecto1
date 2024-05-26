@@ -8,6 +8,8 @@ window.onload = function() {
   const alphabetContainer = document.querySelector("#alphabet-container");
   const messageContainer = document.querySelector("#message");
   const categoryContainer = document.querySelector("#category");
+  const vidasContainer = document.querySelector("#vidas");
+  let lives = 6;
   const frutas = [
     "manzana",
     "banana",
@@ -102,7 +104,13 @@ window.onload = function() {
     actualizarPalabraOculta();
 
     if (!acierto) {
-      messageContainer.textContent = `La letra ${letra} no está en la palabra.`;
+      messageContainer.textContent = La letra ${letra} no está en la palabra.;
+      lives--;
+      vidasContainer.innerHTML = "Te quedan " + lives + " vidas";
+      if (lives == 0) {
+        deshabilitarBotones();
+        messageContainer.textContent = "¡Lo Lamento! te has quedado sin vidas.";
+      }
     } else {
       messageContainer.textContent = "";
     }
