@@ -9,8 +9,18 @@ window.onload = function() {
   const messageContainer = document.querySelector("#message");
   const categoryContainer = document.querySelector("#category");
   const vidasContainer = document.querySelector("#vidas");
+  const hangmanImage = document.querySelector("#hangman-image");
+  const resultModal = new bootstrap.Modal(
+    document.getElementById("resultModal"),
+    {}
+  );
+  const resultModalLabel = document.getElementById("resultModalLabel");
+  const resultModalBody = document.getElementById("resultModalBody");
+  const playAgainButton = document.getElementById("playAgainButton");
+
   let lives = 6;
   let puntaje = 0;
+
   const frutas = [
     "manzana",
     "banana",
@@ -69,30 +79,37 @@ window.onload = function() {
     return { palabra: randomWord, categoria: randomCategoryKey };
   }
 
-  const { palabra, categoria } = seleccionarPalabra(categories);
-  const palabraOculta = Array(palabra.length).fill("_");
-
-  function actualizarPalabraOculta() {
+  function actualizarPalabraOculta(palabraOculta) {
     wordContainer.innerHTML = palabraOculta.join(" ");
   }
-
+  function actualizarImagenAhorcado() {
+    hangmanImage.src = `./360_F_517383341_8nWEFfM1KL3K5LNTjUDrne3x0kZiuxuj${lives}.jpg`;
+  }
   function inicializarJuego() {
+    const { palabra, categoria } = seleccionarPalabra(categories);
+    const palabraOculta = Array(palabra.length).fill("_");
+    lives = 6;
+    vidasContainer.innerHTML = "Te quedan " + lives + " vidas";
     categoryContainer.innerHTML = `Categoría: ${categoria
       .charAt(0)
       .toUpperCase() + categoria.slice(1)}`;
-    actualizarPalabraOculta();
+    actualizarPalabraOculta(palabraOculta);
+    alphabetContainer.innerHTML = "";
+    actualizarImagenAhorcado();
 
     const abecedario = "abcdefghijklmnopqrstuvwxyz".split("");
     abecedario.forEach(letra => {
       const button = document.createElement("button");
       button.textContent = letra;
       button.classList.add("letter-button");
-      button.addEventListener("click", () => manejarLetra(letra));
+      button.addEventListener("click", () =>
+        manejarLetra(letra, palabra, palabraOculta)
+      );
       alphabetContainer.appendChild(button);
     });
   }
 
-  function manejarLetra(letra) {
+  function manejarLetra(letra, palabra, palabraOculta) {
     let acierto = false;
 
     for (let i = 0; i < palabra.length; i++) {
@@ -102,23 +119,26 @@ window.onload = function() {
       }
     }
 
-    actualizarPalabraOculta();
+    actualizarPalabraOculta(palabraOculta);
 
     if (!acierto) {
       messageContainer.textContent = `La letra ${letra} no está en la palabra.`;
       lives--;
       vidasContainer.innerHTML = "Te quedan " + lives + " vidas";
-      if (lives == 0) {
+      actualizarImagenAhorcado();
+      if (lives === 0) {
         deshabilitarBotones();
-        messageContainer.textContent = "¡Lo Lamento! te has quedado sin vidas.";
+        mostrarResultado(false);
+        puntaje = 0;
       }
     } else {
       messageContainer.textContent = "";
-      puntaje ++;
+      puntaje += 10;
+      messageContainer.textContent = `Tienes ${puntaje} puntos`;
     }
 
     if (!palabraOculta.includes("_")) {
-      messageContainer.textContent = "¡Felicidades! Has adivinado la palabra.";
+      mostrarResultado(true);
       deshabilitarBotones();
     }
   }
@@ -129,6 +149,22 @@ window.onload = function() {
       button.disabled = true;
     });
   }
+
+  function mostrarResultado(ganaste) {
+    if (ganaste) {
+      resultModalLabel.textContent = "¡Felicidades!";
+      resultModalBody.textContent = "Has adivinado la palabra.";
+    } else {
+      resultModalLabel.textContent = "¡Lo Lamento!";
+      resultModalBody.textContent = "Te has quedado sin vidas.";
+    }
+    resultModal.show();
+  }
+
+  playAgainButton.addEventListener("click", () => {
+    resultModal.hide();
+    inicializarJuego();
+  });
 
   inicializarJuego();
 };
