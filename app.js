@@ -53,11 +53,27 @@ window.onload = function() {
     "golf",
     "béisbol"
   ];
-  let categories = [frutas, animales, colores, paises, deportes];
+  let categories = {
+    frutas: frutas,
+    animales: animales,
+    colores: colores,
+    paises: paises,
+    deportes: deportes
+  };
+
   function generador(e) {
     return e[Math.floor(Math.random() * e.length)];
   }
-  let categoria = generador(categories);
-  let excusa = generador(categoria);
-  holaaaaaaaaaaaaaaaaaaaaaaaa.innerHTML = excusa;
+
+  // Select a random category
+  let categoryKeys = Object.keys(categories);
+  let randomCategoryKey = generador(categoryKeys);
+  let randomCategory = categories[randomCategoryKey];
+
+  // Select a random word from the chosen category
+  let randomWord = generador(randomCategory);
+
+  // Combine category and word to form the excuse
+  let excuse = `${randomCategoryKey} ${randomWord}`;
+  holaaaaaaaaaaaaaaaaaaaaaaaa.innerHTML = excuse;
 };
