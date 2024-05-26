@@ -10870,6 +10870,14 @@
     var alphabetContainer = document.querySelector("#alphabet-container");
     var messageContainer = document.querySelector("#message");
     var categoryContainer = document.querySelector("#category");
+    var vidasContainer = document.querySelector("#vidas");
+    var hangmanImage = document.querySelector("#hangman-image");
+    var resultModal = new bootstrap.Modal(document.getElementById("resultModal"), {});
+    var resultModalLabel = document.getElementById("resultModalLabel");
+    var resultModalBody = document.getElementById("resultModalBody");
+    var playAgainButton = document.getElementById("playAgainButton");
+    var lives = 6;
+    var puntaje = 0;
     var frutas = ["manzana", "banana", "cereza", "durazno", "kiwi", "limon", "mango"];
     var animales = ["perro", "gato", "elefante", "jirafa", "tigre", "leon", "delfin"];
     var colores = ["rojo", "azul", "verde", "amarillo", "negro", "blanco", "naranja"];
@@ -10894,32 +10902,39 @@
       };
     }
   
-    var _seleccionarPalabra = seleccionarPalabra(categories),
-        palabra = _seleccionarPalabra.palabra,
-        categoria = _seleccionarPalabra.categoria;
-  
-    var palabraOculta = Array(palabra.length).fill("_");
-  
-    function actualizarPalabraOculta() {
+    function actualizarPalabraOculta(palabraOculta) {
       wordContainer.innerHTML = palabraOculta.join(" ");
     }
   
+    function actualizarImagenAhorcado() {
+      hangmanImage.src = "./360_F_517383341_8nWEFfM1KL3K5LNTjUDrne3x0kZiuxuj".concat(lives, ".jpg");
+    }
+  
     function inicializarJuego() {
+      var _seleccionarPalabra = seleccionarPalabra(categories),
+          palabra = _seleccionarPalabra.palabra,
+          categoria = _seleccionarPalabra.categoria;
+  
+      var palabraOculta = Array(palabra.length).fill("_");
+      lives = 6;
+      vidasContainer.innerHTML = "Te quedan " + lives + " vidas";
       categoryContainer.innerHTML = "Categor\xEDa: ".concat(categoria.charAt(0).toUpperCase() + categoria.slice(1));
-      actualizarPalabraOculta();
+      actualizarPalabraOculta(palabraOculta);
+      alphabetContainer.innerHTML = "";
+      actualizarImagenAhorcado();
       var abecedario = "abcdefghijklmnopqrstuvwxyz".split("");
       abecedario.forEach(function (letra) {
         var button = document.createElement("button");
         button.textContent = letra;
         button.classList.add("letter-button");
         button.addEventListener("click", function () {
-          return manejarLetra(letra);
+          return manejarLetra(letra, palabra, palabraOculta);
         });
         alphabetContainer.appendChild(button);
       });
     }
   
-    function manejarLetra(letra) {
+    function manejarLetra(letra, palabra, palabraOculta) {
       var acierto = false;
   
       for (var i = 0; i < palabra.length; i++) {
@@ -10929,16 +10944,27 @@
         }
       }
   
-      actualizarPalabraOculta();
+      actualizarPalabraOculta(palabraOculta);
   
       if (!acierto) {
         messageContainer.textContent = "La letra ".concat(letra, " no est\xE1 en la palabra.");
+        lives--;
+        vidasContainer.innerHTML = "Te quedan " + lives + " vidas";
+        actualizarImagenAhorcado();
+  
+        if (lives === 0) {
+          deshabilitarBotones();
+          mostrarResultado(false);
+          puntaje = 0;
+        }
       } else {
         messageContainer.textContent = "";
+        puntaje += 10;
+        messageContainer.textContent = "Tienes ".concat(puntaje, " puntos");
       }
   
       if (!palabraOculta.includes("_")) {
-        messageContainer.textContent = "¡Felicidades! Has adivinado la palabra.";
+        mostrarResultado(true);
         deshabilitarBotones();
       }
     }
@@ -10950,6 +10976,22 @@
       });
     }
   
+    function mostrarResultado(ganaste) {
+      if (ganaste) {
+        resultModalLabel.textContent = "¡Felicidades!";
+        resultModalBody.textContent = "Has adivinado la palabra.";
+      } else {
+        resultModalLabel.textContent = "¡Lo Lamento!";
+        resultModalBody.textContent = "Te has quedado sin vidas.";
+      }
+  
+      resultModal.show();
+    }
+  
+    playAgainButton.addEventListener("click", function () {
+      resultModal.hide();
+      inicializarJuego();
+    });
     inicializarJuego();
   };
   
