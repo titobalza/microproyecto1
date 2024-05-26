@@ -19123,11 +19123,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
 /* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.css */ "./src/style.css");
 /* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _assets_img_rigo_baby_jpg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./assets/img/rigo-baby.jpg */ "./src/assets/img/rigo-baby.jpg");
-/* harmony import */ var _assets_img_4geeks_ico__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./assets/img/4geeks.ico */ "./src/assets/img/4geeks.ico");
 /* eslint-disable */
-
-
 
 
 
@@ -19139,42 +19135,28 @@ window.onload = function () {
   var colores = ["rojo", "azul", "verde", "amarillo", "negro", "blanco", "naranja"];
   var paises = ["argentina", "brasil", "canadá", "dinamarca", "españa", "francia", "japón"];
   var deportes = ["fútbol", "baloncesto", "tenis", "natación", "ciclismo", "golf", "béisbol"];
-  var categories = [frutas, animales, colores, paises, deportes];
+  var categories = {
+    frutas: frutas,
+    animales: animales,
+    colores: colores,
+    paises: paises,
+    deportes: deportes
+  };
 
   function generador(e) {
     return e[Math.floor(Math.random() * e.length)];
-  }
+  } // Select a random category
 
-  var categoria = generador(categories);
-  var excusa = generador(categoria);
-  holaaaaaaaaaaaaaaaaaaaaaaaa.innerHTML = excusa;
+
+  var categoryKeys = Object.keys(categories);
+  var randomCategoryKey = generador(categoryKeys);
+  var randomCategory = categories[randomCategoryKey]; // Select a random word from the chosen category
+
+  var randomWord = generador(randomCategory); // Combine category and word to form the excuse
+
+  var excuse = "".concat(randomCategoryKey, " ").concat(randomWord);
+  holaaaaaaaaaaaaaaaaaaaaaaaa.innerHTML = excuse;
 };
-
-/***/ }),
-
-/***/ "./src/assets/img/4geeks.ico":
-/*!***********************************!*\
-  !*** ./src/assets/img/4geeks.ico ***!
-  \***********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "4geeks.ico");
-
-/***/ }),
-
-/***/ "./src/assets/img/rigo-baby.jpg":
-/*!**************************************!*\
-  !*** ./src/assets/img/rigo-baby.jpg ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "rigo-baby.jpg");
 
 /***/ }),
 
