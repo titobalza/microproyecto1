@@ -10860,6 +10860,18 @@
   /* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_0__);
   /* harmony import */ var _assets_img_360_F_517383341_8nWEFfM1KL3K5LNTjUDrne3x0kZiuxuj_jpg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./assets/img/360_F_517383341_8nWEFfM1KL3K5LNTjUDrne3x0kZiuxuj.jpg */ "./src/assets/img/360_F_517383341_8nWEFfM1KL3K5LNTjUDrne3x0kZiuxuj.jpg");
   /* harmony import */ var _assets_img_Hangman_ico__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./assets/img/Hangman.ico */ "./src/assets/img/Hangman.ico");
+  function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+  
+  function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+  
+  function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+  
+  function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+  
+  function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+  
+  function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+  
   /* eslint-disable */
   
   
@@ -10876,8 +10888,42 @@
     var resultModalLabel = document.getElementById("resultModalLabel");
     var resultModalBody = document.getElementById("resultModalBody");
     var playAgainButton = document.getElementById("playAgainButton");
+    var playerNameInput = document.getElementById("playerNameInput");
+    var selectNameButton = document.getElementById("selectNameButton");
+    var nameModal = document.getElementById("nameModal");
+    var selectNameConfirmButton = document.getElementById("selectNameConfirmButton");
+    var leaderboardButton = document.getElementById("leaderboardButton");
+    leaderboardButton.addEventListener("click", mostrarLeaderboard);
+    var userScores = {};
     var lives = 6;
     var puntaje = 0;
+    selectNameConfirmButton.addEventListener("click", function () {
+      var selectedName = playerNameInput.value;
+  
+      if (selectedName) {
+        playerNameInput.value = selectedName;
+        var storedUserScores = localStorage.getItem("userScores");
+  
+        if (storedUserScores) {
+          userScores = JSON.parse(storedUserScores);
+        }
+  
+        if (!userScores[selectedName]) {
+          userScores[selectedName] = 0;
+          localStorage.setItem("userScores", JSON.stringify(userScores));
+        }
+  
+        localStorage.setItem("playerName", selectedName);
+      }
+  
+      $(nameModal).modal("hide");
+    });
+    selectNameButton.addEventListener("click", function () {
+      cargarNombresRegistrados();
+    });
+    nameModal.addEventListener("show.bs.modal", function () {
+      cargarNombresRegistrados();
+    });
     var frutas = ["manzana", "banana", "cereza", "durazno", "kiwi", "limon", "mango"];
     var animales = ["perro", "gato", "elefante", "jirafa", "tigre", "leon", "delfin"];
     var colores = ["rojo", "azul", "verde", "amarillo", "negro", "blanco", "naranja"];
@@ -10890,6 +10936,43 @@
       paises: paises,
       deportes: deportes
     };
+  
+    function mostrarLeaderboard() {
+      var storedUserScores = localStorage.getItem("userScores");
+  
+      if (storedUserScores) {
+        userScores = JSON.parse(storedUserScores);
+      }
+  
+      var leaderboardModal = new bootstrap.Modal(document.getElementById("leaderboardModal"), {});
+      var leaderboardModalBody = document.getElementById("leaderboardModalBody");
+      var leaderboardHTML = "<h3>Leaderboard</h3>";
+      leaderboardHTML += "<table>";
+      leaderboardHTML += "<tr><th>Nombre</th><th>Puntuación</th></tr>";
+  
+      for (var _i = 0, _Object$entries = Object.entries(userScores); _i < _Object$entries.length; _i++) {
+        var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+            name = _Object$entries$_i[0],
+            score = _Object$entries$_i[1];
+  
+        leaderboardHTML += "<tr><td>".concat(name, "</td><td>").concat(score, "</td></tr>");
+      }
+  
+      leaderboardHTML += "</table>";
+      leaderboardModalBody.innerHTML = leaderboardHTML;
+      leaderboardModal.show();
+    }
+  
+    function cargarNombresRegistrados() {
+      var storedPlayerName = localStorage.getItem("playerName");
+  
+      if (storedPlayerName) {
+        var option = document.createElement("option");
+        option.value = storedPlayerName;
+        option.textContent = storedPlayerName;
+        option.selected = true;
+      }
+    }
   
     function seleccionarPalabra(categorias) {
       var categoryKeys = Object.keys(categorias);
@@ -10926,9 +11009,11 @@
       abecedario.forEach(function (letra) {
         var button = document.createElement("button");
         button.textContent = letra;
-        button.classList.add("letter-button");
+        button.classList.add("letter-button", "btn", "btn-secondary", "m-1");
         button.addEventListener("click", function () {
-          return manejarLetra(letra, palabra, palabraOculta);
+          manejarLetra(letra, palabra, palabraOculta);
+          button.classList.add("active");
+          button.disabled = true;
         });
         alphabetContainer.appendChild(button);
       });
@@ -10959,8 +11044,6 @@
         }
       } else {
         messageContainer.textContent = "";
-        puntaje += 10;
-        messageContainer.textContent = "Tienes ".concat(puntaje, " puntos");
       }
   
       if (!palabraOculta.includes("_")) {
@@ -10977,11 +11060,17 @@
     }
   
     function mostrarResultado(ganaste) {
+      var storedPlayerName = localStorage.getItem("playerName");
+      var playerName = storedPlayerName ? storedPlayerName : "Jugador";
+      var playerScore = userScores[playerName] || 0;
+  
       if (ganaste) {
+        userScores[playerName] = playerScore + 10;
+        localStorage.setItem("userScores", JSON.stringify(userScores));
         resultModalLabel.textContent = "¡Felicidades!";
-        resultModalBody.textContent = "Has adivinado la palabra.";
+        resultModalBody.textContent = "Has adivinado la palabra, llevas ".concat(userScores[playerName], " puntos, ").concat(playerName, "!");
       } else {
-        resultModalLabel.textContent = "¡Lo Lamento!";
+        resultModalLabel.textContent = "¡Lo lamento!";
         resultModalBody.textContent = "Te has quedado sin vidas.";
       }
   
