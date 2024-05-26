@@ -10,6 +10,7 @@ window.onload = function() {
   const categoryContainer = document.querySelector("#category");
   const vidasContainer = document.querySelector("#vidas");
   let lives = 6;
+  let puntaje = 0;
   const frutas = [
     "manzana",
     "banana",
@@ -113,6 +114,7 @@ window.onload = function() {
       }
     } else {
       messageContainer.textContent = "";
+      puntaje ++;
     }
 
     if (!palabraOculta.includes("_")) {
