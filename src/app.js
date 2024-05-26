@@ -104,7 +104,7 @@ window.onload = function() {
     actualizarPalabraOculta();
 
     if (!acierto) {
-      messageContainer.textContent = La letra ${letra} no está en la palabra.;
+      messageContainer.textContent = `La letra ${letra} no está en la palabra.`;
       lives--;
       vidasContainer.innerHTML = "Te quedan " + lives + " vidas";
       if (lives == 0) {
